@@ -31,7 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     self.displayManager = DisplayManager()
     self.setupViewControllers()
     self.subscribeEventListeners()
-    self.startOrRestartMediaKeyTap()
     self.statusItem.image = NSImage(named: "status")
     self.statusItem.menu = self.statusMenu
     self.setDefaultPrefs()
@@ -111,6 +110,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.addDisplayToMenu(display: display, asSubMenu: ddcDisplays.count > 1)
       }
     }
+    self.startOrRestartMediaKeyTap()
   }
 
   private func addDisplayToMenu(display: ExternalDisplay, asSubMenu: Bool) {
@@ -164,7 +164,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   private func subscribeEventListeners() {
     // subscribe KeyTap event listener
-    NotificationCenter.default.addObserver(self, selector: #selector(handleListenForChanged), name: .listenFor, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleListenForOrEnableChanged), name: .listenFor, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleShowContrastChanged), name: .showContrast, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleFriendlyNameChanged), name: .friendlyName, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handlePreferenceReset), name: .preferenceReset, object: nil)
@@ -258,7 +258,7 @@ extension AppDelegate: MediaKeyTapDelegate {
 
   // MARK: - Prefs notification
 
-  @objc func handleListenForChanged() {
+  @objc func handleListenForOrEnableChanged() {
     self.startOrRestartMediaKeyTap()
   }
 
@@ -273,7 +273,6 @@ extension AppDelegate: MediaKeyTapDelegate {
   @objc func handlePreferenceReset() {
     self.setDefaultPrefs()
     self.updateDisplays()
-    self.startOrRestartMediaKeyTap()
   }
 
   private func startOrRestartMediaKeyTap() {
@@ -293,9 +292,30 @@ extension AppDelegate: MediaKeyTapDelegate {
       let keysToDelete: [MediaKey] = [.volumeUp, .volumeDown, .mute]
       keys.removeAll { keysToDelete.contains($0) }
     }
-    self.mediaKeyTap?.stop()
-    self.mediaKeyTap = MediaKeyTap(delegate: self, for: keys, observeBuiltIn: false)
-    self.mediaKeyTap?.start()
+
+    let ddcDisplays = DisplayManager.shared.getDdcCapableDisplays()
+    var atLeastOne = false
+    for display in ddcDisplays where display.isEnabled {
+      atLeastOne = true
+      break
+    }
+
+    // If there isn't at least one enabled DDC external display, then don't tap any keys. The use case
+    // for this is when a user wants to use MonitorControl for a monitor that resides in one location
+    // (e.g. their home), but does not want to use MonitorControl in another location (e.g. their
+    // workplace). But they also don't want to manually run or quit MonitorControl when they move
+    // locations.
+    if (!atLeastOne) {
+      let keysToDelete: [MediaKey] = [.brightnessUp, .brightnessDown, .mute, .volumeUp, .volumeDown]
+      keys.removeAll { keysToDelete.contains($0) }
+      self.mediaKeyTap?.stop()
+      return
+    }
+    else {
+      self.mediaKeyTap?.stop()
+      self.mediaKeyTap = MediaKeyTap(delegate: self, for: keys, observeBuiltIn: false)
+      self.mediaKeyTap?.start()
+    }
   }
 }
 
