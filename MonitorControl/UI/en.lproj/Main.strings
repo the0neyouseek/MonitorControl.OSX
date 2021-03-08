@@ -109,6 +109,9 @@
 /* Class = "NSTableColumn"; headerCell.title = "Polling Count"; ObjectID = "ytT-up-Dhs"; */
 "ytT-up-Dhs.headerCell.title" = "Polling Count";
 
+/* Class = "NSButtonCell"; title = "Show Volume Slider"; ObjectID = "vs6-in-GV0.title"; */
+"vs6-in-GV0.title" = "Show Volume Slider";
+
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "2gr-xG-Byx"; */
 "2gr-xG-Byx.title" = "";
 

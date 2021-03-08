@@ -106,6 +106,9 @@
 /* Class = "NSButtonCell"; title = "Show a slider for contrast"; ObjectID = "xSI-8W-Xd0"; */
 "xSI-8W-Xd0.title" = "显示对比度滑动条";
 
+/* Class = "NSButtonCell"; title = "Show Volume Slider"; ObjectID = "vs6-in-GV0.title"; */
+"vs6-in-GV0.title" = "显示音量滑动条";
+
 /* Class = "NSTableColumn"; headerCell.title = "Polling Count"; ObjectID = "ytT-up-Dhs"; */
 "ytT-up-Dhs.headerCell.title" = "查询次数";
 
