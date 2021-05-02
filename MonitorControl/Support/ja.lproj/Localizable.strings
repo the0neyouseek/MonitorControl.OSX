@@ -7,7 +7,7 @@
 /* Shown in the alert dialog */
 "Are you sure you want to reset all preferences?" = "Are you sure you want to reset all preferences?";
 
-/* Sown in menu */
+/* Shown in menu */
 "Brightness" = "画面輝度";
 
 /* Build */
@@ -19,7 +19,7 @@
 /* Shown in menu */
 "Default" = "デフォルト";
 
-/* No comment provided by engineer. */
+/* Shown in the main prefs window */
 "Display" = "ディスプレイ";
 
 /* Shown in the alert dialog */
