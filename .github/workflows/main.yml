@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: macos-11
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: brew bundle
+        run: brew bundle
+
+      - name: print xcodebuild version
+        run: xcodebuild -version
+
+      - name: xcodebuild
+        uses: sersoft-gmbh/xcodebuild-action@v1.4
+        with:
+          project: MonitorControl.xcodeproj
+          scheme: MonitorControl
+          destination: platform=macOS
+          action: build 
